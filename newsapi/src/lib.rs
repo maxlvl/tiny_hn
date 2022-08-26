@@ -1,6 +1,16 @@
-use std::error::Error;
 use colour:: { dark_green, yellow, blue,red };
 use serde::{ Serialize, Deserialize };
+
+#[derive(thiserror::Error, Debug)]
+pub enum NewsApiError {
+    #[error("Api request failed")]
+    RequestFailed(ureq::Error),
+    #[error("Failed to convert request response into string")]
+    RequestStringConversionFailed(std::io::Error),
+    #[error("Failed to parse request response")]
+    ArticleParseError(serde_json::Error),
+
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct Article {
@@ -11,9 +21,11 @@ pub struct Article {
     url: String, 
 }
 
-pub fn get_articles(url: &str) -> Result<Vec<Article>, Box<dyn Error>> {
-    let response = ureq::get(url).call()?.into_string()?;
-    let articles: Vec<Article> = serde_json::from_str(&response).unwrap();
+pub fn get_articles(url: &str) -> Result<Vec<Article>, NewsApiError> {
+    let response = ureq::get(url).call().map_err(|e| NewsApiError::RequestFailed(e))?
+        .into_string().map_err( |e| NewsApiError::RequestStringConversionFailed(e))?;
+
+    let articles: Vec<Article> = serde_json::from_str(&response).map_err( |e| NewsApiError::ArticleParseError(e))?;
     Ok(articles)
 }
 
