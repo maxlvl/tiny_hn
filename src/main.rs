@@ -1,6 +1,6 @@
-use std::error::Error;
 use newsapi::get_articles;
 use newsapi::render_articles;
+use std::error::Error;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let url = "http://api.hackerwebapp.com/news";
@@ -9,4 +9,4 @@ fn main() -> Result<(), Box<dyn Error>> {
     render_articles(&articles);
 
     Ok(())
-} 
+}

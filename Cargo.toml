@@ -3,6 +3,12 @@ name = "tiny_hn"
 version = "0.1.0"
 edition = "2021"
 
+
+description = "A simple HackerNews CLI app"
+license = "MIT"
+authors = ["maxvl"]
+
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
